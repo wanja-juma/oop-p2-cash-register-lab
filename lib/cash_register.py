@@ -1,4 +1,3 @@
-
 class CashRegister:
     def __init__(self, discount=0):
         self.discount = discount
@@ -18,9 +17,8 @@ class CashRegister:
         if self.discount == 0:
             print("There is no discount to apply.")
         else:
-            self.total = self.total - (self.total * self.discount / 100)
+            self.total -= self.total * (self.discount / 100)
 
-            # The test expects exactly this output
             if self.total == int(self.total):
                 print(
                     f"After the discount, the total comes to ${int(self.total)}."

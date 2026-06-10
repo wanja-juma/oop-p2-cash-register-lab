@@ -3,31 +3,41 @@ class CashRegister:
         self.discount = discount
         self.total = 0
         self.items = []
-        self.last_transaction_amount = 0
+        self.previous_transactions = []
 
-    def add_item(self, title, price, quantity=1):
+    def add_item(self, title, price, quantity=None):
+        if quantity is None:
+            quantity = 1
+
         self.total += price * quantity
 
         for _ in range(quantity):
             self.items.append(title)
 
-        self.last_transaction_amount = price * quantity
+        self.previous_transactions.append({
+            "title": title,
+            "price": price,
+            "quantity": quantity
+        })
 
     def apply_discount(self):
         if self.discount == 0:
             print("There is no discount to apply.")
-        else:
-            self.total -= self.total * (self.discount / 100)
+            return
 
-            if self.total == int(self.total):
-                print(
-                    f"After the discount, the total comes to ${int(self.total)}."
-                )
-            else:
-                print(
-                    f"After the discount, the total comes to ${self.total}."
-                )
+        self.total = self.total - (self.total * self.discount / 100)
+        self.total = round(self.total, 2)
+
+        print(f"After the discount, the total comes to ${int(self.total)}.")
 
     def void_last_transaction(self):
-        self.total -= self.last_transaction_amount
-        self.last_transaction_amount = 0
+        if not self.previous_transactions:
+            return
+
+        last = self.previous_transactions.pop()
+
+        self.total -= last["price"] * last["quantity"]
+
+        for _ in range(last["quantity"]):
+            if last["title"] in self.items:
+                self.items.remove(last["title"])
